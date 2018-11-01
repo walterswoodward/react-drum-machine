@@ -26,22 +26,19 @@ class DrumPad extends Component {
   constructor(props) {
     super(props);
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleKeyUp = this.handleKeyUp.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.keyChange = React.createRef();
+    this.drumpadActive = React.createRef();
   }
 
   componentDidMount() {
     document.addEventListener("keydown", this.handleKeyDown);
     document.addEventListener("keyup", this.handleKeyUp);
-
-    // console.log(document.getElementById(this.props.letter))
-    // document.getElementById(this.props.letter).style.color = "green"
   }
 
   componentWillUnmount() {
     document.removeEventListener("keydown", this.handleKeyDown);
     document.removeEventListener("keyup", this.handleKeyUp);
-
   }
 
   handleKeyDown = e => {
@@ -50,24 +47,30 @@ class DrumPad extends Component {
       this.audio.play();
       this.props.handleDisplay(this.props.pid.toUpperCase());
       // React.createRef
-      this.keyChange.current.style.background = "yellow" // https://reactjs.org/docs/refs-and-the-dom.html
+      this.drumpadActive.current.style.background = "yellow"; // https://reactjs.org/docs/refs-and-the-dom.html
     }
   };
 
   handleKeyUp = e => {
-    this.keyChange.current.style.background = "orange"
-
-  }
+    if (e.keyCode === this.props.letter.charCodeAt()) {
+      this.drumpadActive.current.style.background = "orange";
+    }
+  };
 
   handleClick = () => {
     // Helps with delay
     this.audio.currentTime = 0;
+    this.props.handleDisplay(this.props.pid.toUpperCase());
     this.audio.play();
-    
   };
   render() {
     return (
-      <div className="drum-pad" onClick={this.handleClick} ref={this.keyChange} >
+      <div
+        className="drum-pad"
+        onClick={this.handleClick}
+        ref={this.drumpadActive}
+        id={this.props.id}
+      >
         <p className="drum-pad-text">{this.props.letter}</p>
         <audio
           ref={ref => (this.audio = ref)}
@@ -94,11 +97,13 @@ class DrumMachine extends Component {
 
   render() {
     return (
-      <div id="drum-machine">
+      <div id="drum-body">
         <div id="display">{this.state.display}</div>
-        <div id="drum-pads">
+        <div id="drum-machine">
           {sounds.map(sound => (
             <DrumPad
+              id={sound.pid}
+              className="drum-pad"
               key={sound.pid}
               pid={sound.pid}
               letter={sound.letter}
@@ -107,9 +112,9 @@ class DrumMachine extends Component {
             />
           ))}
         </div>
-        <div id="power-switch">
+        {/* <div id="power-switch">
         <div id="power-switch-knob">OFF</div>
-        </div>
+        </div> */}
       </div>
     );
   }

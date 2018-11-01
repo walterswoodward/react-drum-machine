@@ -4,7 +4,7 @@ body {
   background: black;
 }
 
-#drum-machine {
+#drum-body {
   display: flex;
   flex-direction: column;
   /* justify-content: center; */
@@ -23,7 +23,7 @@ body {
   font-family: 'Shojumaru', cursive;
 }
 
-#drum-pads {
+#drum-machine {
   background: pink;
   display: flex;
   flex-wrap: wrap;
@@ -56,7 +56,8 @@ body {
 }
 
 .drum-pad:hover {
-  background: white;
+  /* TODO: Fix bug here where this no longer works if keyDown style is added */
+  background: yellow;
   cursor: pointer;
 }
 
